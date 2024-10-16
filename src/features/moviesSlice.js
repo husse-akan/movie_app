@@ -1,6 +1,6 @@
-// src/features/moviesSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
+// Async thunk för att hämta filmer baserat på en sökterm
 export const fetchMovies = createAsyncThunk(
   "movies/fetchMovies",
   async (query) => {
@@ -11,6 +11,7 @@ export const fetchMovies = createAsyncThunk(
   }
 );
 
+// Async thunk för att hämta detaljerad information om en film baserat på dess ID
 export const fetchMovieDetail = createAsyncThunk(
   "movies/fetchMovieDetail",
   async (id) => {
@@ -21,21 +22,22 @@ export const fetchMovieDetail = createAsyncThunk(
   }
 );
 
+// Skapa slice för movies med tillstånd för filmlista, favoritfilmer och statusar
 const moviesSlice = createSlice({
   name: "movies",
-  initialState: { list: [], status: null, movie: null, favorites: [] }, // Lägg till 'favorites'
+  initialState: { list: [], status: null, movie: null, favorites: [] }, // Lägg till 'favorites' i initialState
   reducers: {
+    // Reducer för att lägga till film till favoriter
     addToFavorites: (state, action) => {
-      // Kontrollera om filmen redan finns i favoriter
       const existingMovie = state.favorites.find(
         (movie) => movie.imdbID === action.payload.imdbID
       );
       if (!existingMovie) {
-        state.favorites.push(action.payload); // Lägg till filmen i favoriter
+        state.favorites.push(action.payload); // Lägg till filmen om den inte redan finns
       }
     },
+    // Reducer för att ta bort film från favoriter
     removeFromFavorites: (state, action) => {
-      // Filtrera bort filmen från favoriter
       state.favorites = state.favorites.filter(
         (movie) => movie.imdbID !== action.payload.imdbID
       );
@@ -43,30 +45,36 @@ const moviesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Hantera laddning av filmlista
       .addCase(fetchMovies.pending, (state) => {
         state.status = "loading";
       })
+      // Hantera när filmlistan har laddats klart
       .addCase(fetchMovies.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.list = action.payload.Search || []; // Se till att det alltid är en array
       })
+      // Hantera fel vid laddning av filmlista
       .addCase(fetchMovies.rejected, (state) => {
         state.status = "failed";
       })
+      // Hantera laddning av detaljerad film
       .addCase(fetchMovieDetail.pending, (state) => {
         state.status = "loading";
       })
+      // Hantera när detaljerad film har laddats klart
       .addCase(fetchMovieDetail.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.movie = action.payload; // Spara detaljerad film
       })
+      // Hantera fel vid laddning av detaljerad film
       .addCase(fetchMovieDetail.rejected, (state) => {
         state.status = "failed";
       });
   },
 });
 
-// Exportera actions för att kunna använda dem i komponenterna
+// Exportera actions för att använda dem i komponenter
 export const { addToFavorites, removeFromFavorites } = moviesSlice.actions;
 
 export default moviesSlice.reducer;
