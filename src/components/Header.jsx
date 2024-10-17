@@ -6,7 +6,7 @@ function Header() {
       <h1>My Movie App</h1>
       <nav>
         <Link to="/">Home</Link>
-        <Link to="/favorites">Favorites</Link> {/* Länk till favoriter */}
+        <Link to="/favorites">Favorites</Link> {}
       </nav>
     </header>
   );

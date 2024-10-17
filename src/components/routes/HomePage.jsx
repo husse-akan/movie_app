@@ -32,13 +32,20 @@ const HomePage = () => {
 
   return (
     <div>
-      <input
-        type="text"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder="Enter movie title"
-      />
-      <button onClick={handleSearch}>Search</button>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSearch();
+        }}
+      >
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Enter movie title"
+        />
+        <button type="submit">Search</button>
+      </form>
 
       {status === "loading" && <p>Loading...</p>}
       {status === "failed" && <p>Error: {error}</p>}
@@ -46,10 +53,8 @@ const HomePage = () => {
         <div>
           {Array.isArray(movies) && movies.length > 0 ? (
             movies.map((movie) => (
-              <div key={movie.imdbID}>
-                <Link to={`/movie/${movie.imdbID}`}>
-                  <h3>{movie.Title}</h3>
-                </Link>
+              <Link to={`/movie/${movie.imdbID}`} key={movie.imdbID}>
+                <h3>{movie.Title}</h3>
                 <p>{movie.Year}</p>
                 <img src={movie.Poster} alt={movie.Title} />
                 {favorites.some((fav) => fav.imdbID === movie.imdbID) ? (
@@ -57,11 +62,14 @@ const HomePage = () => {
                     Remove from Favorites
                   </button>
                 ) : (
-                  <button onClick={() => handleAddToFavorites(movie)}>
+                  <button
+                    id="red-btn"
+                    onClick={() => handleAddToFavorites(movie)}
+                  >
                     Add to Favorites
                   </button>
                 )}
-              </div>
+              </Link>
             ))
           ) : (
             <p>Inga filmer hittades.</p>

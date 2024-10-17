@@ -1,4 +1,5 @@
 import React from "react";
+import { Helmet } from "react-helmet-async";
 import { Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import HomePage from "./components/routes/HomePage";
@@ -8,6 +9,16 @@ import MovieDetail from "./components/routes/MovieDetail";
 function App() {
   return (
     <Layout>
+      <Helmet>
+        <title>Movie App</title>
+        <meta
+          name="description"
+          content="Hitta information och beskrivning av dina favoritfilmer."
+        />
+        <meta name="keywords" content="film, filmer, favoritfilmer, omdbapi" />
+        <meta name="robots" content="index, follow" />
+      </Helmet>
+
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/movie/:id" element={<MovieDetail />} />
